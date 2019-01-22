@@ -7,19 +7,17 @@ const MyContext = React.createContext();
 //Provider Component
 class MyProvider extends Component {
     state = {
-        person: 'Wesley',
-        age: 23
+        error: {
+            empty: 'This field must be filled',
+            email: 'Email incorrect',
+            count: 'Must be at least 4 characters'
+        }
     };
 
     render(){
         return(
             <MyContext.Provider value={{
-                state: this.state,
-                growOlder: () => {
-                  this.setState({
-                      age: this.state.age + 1
-                  })
-                }
+                state: this.state
             }}>
                 {this.props.children}
             </MyContext.Provider>
@@ -27,22 +25,35 @@ class MyProvider extends Component {
     }
 }
 
-const Family = (props) => (
-    <div className='family'>
-        <Person/>
-    </div>
-);
 
-class Person extends Component{
+class Form extends Component{
+    state = {
+        password: '',
+        email: '',
+        text: ''
+    };
+
+    handleSubmit = (e) => {
+        e.preventDefault();
+        console.log('True');
+    };
+
+    handleChange = (e) => {
+        this.setState({ [e.target.name] : e.target.value })
+    };
+
     render(){
         return(
             <div>
                 <MyContext.Consumer>
                     {(context) => (
                         <div>
-                            <p>My age is {context.state.age}</p>
-                            <p>My name is {context.state.person}</p>
-                            <button onClick={context.growOlder}>Click me</button>
+                            <form onSubmit={this.handleSubmit} className="form">
+                                <input type="text" name="text" placeholder="Login" onChange={this.handleChange}/>
+                                <input type="email" name="email" placeholder="Email" onChange={this.handleChange}/>
+                                <input type="password" name="password" placeholder="Password" onChange={this.handleChange}/>
+                                <input type="submit" value="Submit" className="submit"/>
+                            </form>
                         </div>
                     )}
                 </MyContext.Consumer>
@@ -55,9 +66,9 @@ class App extends Component {
     render() {
         return (
             <MyProvider>
-                <div>
-                    <h1>I am the app</h1>
-                    <Family />
+                <div className='root'>
+                    <h1>I am the form</h1>
+                    <Form/>
                 </div>
             </MyProvider>
         );
